@@ -5,17 +5,9 @@ const platform = require("platform")
 
 export default function Home() {
 
-  const [ ipv4, setIpv4 ] = useState('')
-  const [ ipv6, setIpv6 ] = useState('')
-  const [ userPlatform, setUserPlatform ] = useState('')
-
-  const json = {
-    "A": 1, 
-    "B": {
-      "B1": "B1",
-      "B2": false
-    }
-  }
+  const [ ipv4, setIpv4 ] = useState("-")
+  const [ ipv6, setIpv6 ] = useState("-")
+  const [ platformDescription, setPlatformDescription ] = useState("-")
 
   useEffect(() => {
 
@@ -32,7 +24,7 @@ export default function Home() {
     })
 
     //Set Platform details
-    setUserPlatform(platform.toString())
+    setPlatformDescription(platform.description)
   }, [])
 
   //Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
@@ -43,14 +35,20 @@ export default function Home() {
     
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
     
-      <h2>{`IPv4: ${ipv4}`}</h2>
+      {/* <h2>{`IPv4: ${ipv4}`}</h2>
       <h2>{`IPv6: ${ipv6}`}</h2>
+      <h2>{`platform client-side: ${userPlatform}`}</h2> */}
 
-      <h2>{`platform client-side: ${userPlatform}`}</h2>
-
-      <pre><code>{JSON.stringify(json, null, '\t')}</code></pre>
+      {/* <pre><code>{JSON.stringify(json, null, '\t')}</code></pre> */}
       <ReactJson 
-        src={json} 
+        src={{
+          ip: {
+            ipv4, ipv6
+          }, 
+          platform: {
+            description: platformDescription
+          }
+        }} 
         name={false}
         theme={"bright"}
         displayObjectSize={false}
