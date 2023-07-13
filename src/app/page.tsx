@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import ReactJson from 'react-json-view'
 const platform = require("platform")
 
 export default function Home() {
@@ -7,6 +8,14 @@ export default function Home() {
   const [ ipv4, setIpv4 ] = useState('')
   const [ ipv6, setIpv6 ] = useState('')
   const [ userPlatform, setUserPlatform ] = useState('')
+
+  const json = {
+    "A": 1, 
+    "B": {
+      "B1": "B1",
+      "B2": false
+    }
+  }
 
   useEffect(() => {
 
@@ -39,6 +48,14 @@ export default function Home() {
 
       <h2>{`platform client-side: ${userPlatform}`}</h2>
 
+      <pre><code>{JSON.stringify(json, null, '\t')}</code></pre>
+      <ReactJson 
+        src={json} 
+        name={false}
+        theme={"bright"}
+        displayObjectSize={false}
+        displayDataTypes={false}
+      />
     </main>
   )
 }
