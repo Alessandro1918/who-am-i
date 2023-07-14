@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import ReactJson from 'react-json-view'
+import JsonViewer from "./components/JsonViewer"
 const platform = require("platform")
 
 export default function Home() {
@@ -39,9 +39,8 @@ export default function Home() {
       <h2>{`IPv6: ${ipv6}`}</h2>
       <h2>{`platform client-side: ${userPlatform}`}</h2> */}
 
-      {/* <pre><code>{JSON.stringify(json, null, '\t')}</code></pre> */}
-      <ReactJson 
-        src={{
+      <JsonViewer
+        data={{
           ip: {
             ipv4, ipv6
           }, 
@@ -49,10 +48,6 @@ export default function Home() {
             description: platformDescription
           }
         }} 
-        name={false}
-        theme={"bright"}
-        displayObjectSize={false}
-        displayDataTypes={false}
       />
     </main>
   )
