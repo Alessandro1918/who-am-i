@@ -12,6 +12,8 @@ export default function Home() {
   const [ platformOSName, setPlatformOSName ] = useState("-")
   const [ platformOSVersion, setPlatformOSVersion ] = useState("-")
   const [ platformDescription, setPlatformDescription ] = useState("-")
+  const [ networkType, setNetworkType ] = useState("-")
+  const [ networkQuality, setNetworkQuality ] = useState("-")
 
   useEffect(() => {
 
@@ -23,7 +25,9 @@ export default function Home() {
     })
     fetch("https://freeipapi.com/api/json").then(response => {
       response.json().then(json => {
-        setIpv6(json.ipAddress)
+        if (json.ipVersion === 6) {
+          setIpv6(json.ipAddress)
+        }
       })
     })
 
@@ -33,6 +37,16 @@ export default function Home() {
     setPlatformOSName(platform.os.family)
     setPlatformOSVersion(platform.os.version)
     setPlatformDescription(platform.description)
+
+    //Set Network details - https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
+    //OBS: API does not support Firefox or Safari
+    if ("connection" in navigator) {
+      const connection:any = navigator["connection"]
+      const type = connection.type
+      const quality = connection.effectiveType 
+      setNetworkType(type)
+      setNetworkQuality(quality)
+    }
   }, [])
 
   //Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
@@ -58,6 +72,10 @@ export default function Home() {
             os_name: platformOSName,
             os_version: platformOSVersion,
             description: platformDescription
+          },
+          connection: {
+            type: networkType,
+            quality: networkQuality
           }
         }} 
       />
