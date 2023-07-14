@@ -7,6 +7,10 @@ export default function Home() {
 
   const [ ipv4, setIpv4 ] = useState("-")
   const [ ipv6, setIpv6 ] = useState("-")
+  const [ platformBrowserName, setPlatformBrowserName ] = useState("-")
+  const [ platformBrowserVersion, setPlatformBrowserVersion ] = useState("-")
+  const [ platformOSName, setPlatformOSName ] = useState("-")
+  const [ platformOSVersion, setPlatformOSVersion ] = useState("-")
   const [ platformDescription, setPlatformDescription ] = useState("-")
 
   useEffect(() => {
@@ -24,6 +28,10 @@ export default function Home() {
     })
 
     //Set Platform details
+    setPlatformBrowserName(platform.name)
+    setPlatformBrowserVersion(platform.version)
+    setPlatformOSName(platform.os.family)
+    setPlatformOSVersion(platform.os.version)
     setPlatformDescription(platform.description)
   }, [])
 
@@ -45,6 +53,10 @@ export default function Home() {
             ipv4, ipv6
           }, 
           platform: {
+            browser_name: platformBrowserName,
+            browser_version: platformBrowserVersion,
+            os_name: platformOSName,
+            os_version: platformOSVersion,
             description: platformDescription
           }
         }} 
