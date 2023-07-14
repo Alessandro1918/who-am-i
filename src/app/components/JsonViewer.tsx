@@ -11,6 +11,7 @@
 
 import { JsonViewer as TextAreaJsonViewer } from '@textea/json-viewer'
 
+//Gets a JSON object as input, and outputs a React component with pretty-json (with spaces and colors)
 export default function JsonViewer(data: any) {
 
   //Themes I liked: bright, colors, google, isotope. Last checked: isotope
