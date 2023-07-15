@@ -11,9 +11,13 @@ export default function Home() {
   const [ platformBrowserVersion, setPlatformBrowserVersion ] = useState("-")
   const [ platformOSName, setPlatformOSName ] = useState("-")
   const [ platformOSVersion, setPlatformOSVersion ] = useState("-")
-  const [ platformDescription, setPlatformDescription ] = useState("-")
+  // const [ platformDescription, setPlatformDescription ] = useState("-")
   const [ networkType, setNetworkType ] = useState("-")
   const [ networkQuality, setNetworkQuality ] = useState("-")
+  const [ deviceType, setDeviceType ] = useState("-")
+  const [ deviceScreen, setdeviceScreen ] = useState("-")
+  const [ deviceModel, setDeviceModel ] = useState("-")
+  const [ deviceManufacturer, setDeviceManufacturer ] = useState("-")
 
   useEffect(() => {
 
@@ -36,7 +40,7 @@ export default function Home() {
     setPlatformBrowserVersion(platform.version)
     setPlatformOSName(platform.os.family)
     setPlatformOSVersion(platform.os.version)
-    setPlatformDescription(platform.description)
+    // setPlatformDescription(platform.description)
 
     //Set Network details - https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
     //OBS: API does not support Firefox or Safari
@@ -47,6 +51,16 @@ export default function Home() {
       setNetworkType(type)
       setNetworkQuality(quality)
     }
+
+    //Set Device details
+    //OBS: device detection by UA string, and not all of them have this info
+    setDeviceType(screen.width > 768 ? "desktop" : "cellphone")
+    setdeviceScreen(`${screen.width} x ${screen.height}`)
+    if (platform.manufacturer) {
+      setDeviceModel(platform.product)
+      setDeviceManufacturer(platform.manufacturer)
+    }
+    
   }, [])
 
   //Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
@@ -71,11 +85,17 @@ export default function Home() {
             browser_version: platformBrowserVersion,
             os_name: platformOSName,
             os_version: platformOSVersion,
-            description: platformDescription
+            // description: platformDescription
           },
           connection: {
             type: networkType,
             quality: networkQuality
+          },
+          device: {
+            type: deviceType,
+            screen: deviceScreen,
+            model: deviceModel,
+            manufacturer: deviceManufacturer,
           }
         }} 
       />
