@@ -77,6 +77,8 @@ export default function Home() {
 
     //Set Position details, after user grant GPS access
     //https://www.w3schools.com/html/html5_geolocation.asp
+    //OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
+    //OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
     function showPosition(position: any) {
       setGeolocationSource("gps")
       // console.log(position)
