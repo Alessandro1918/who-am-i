@@ -144,7 +144,7 @@ export default function Home() {
             model: deviceModel,
             manufacturer: deviceManufacturer,
           },
-          position: {
+          geolocation: {
             source: geolocationSource,
             error: geolocationError,
             latitude: geolocationLatitude,

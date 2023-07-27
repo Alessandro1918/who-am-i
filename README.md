@@ -26,6 +26,13 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "screen": "412 x 915",
     "model": "Samsung SM-N770F",
     "manufacturer": "Samsung"
+  },
+  "geolocation": {
+    "source": "gps",
+    "error": "-",
+    "latitude": -23.1234567890,
+    "longitude": -46.1234567890,
+    "accuracy": 40,
   }
 }
 ```
