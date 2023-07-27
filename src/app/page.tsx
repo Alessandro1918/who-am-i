@@ -15,9 +15,14 @@ export default function Home() {
   const [ networkType, setNetworkType ] = useState("-")
   const [ networkQuality, setNetworkQuality ] = useState("-")
   const [ deviceType, setDeviceType ] = useState("-")
-  const [ deviceScreen, setdeviceScreen ] = useState("-")
+  const [ deviceScreen, setDeviceScreen ] = useState("-")
   const [ deviceModel, setDeviceModel ] = useState("-")
   const [ deviceManufacturer, setDeviceManufacturer ] = useState("-")
+  const [ geolocationSource, setGeolocationSource ] = useState("ip")
+  const [ geolocationError, setGeolocationGpsError ] = useState("-")
+  const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
+  const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
+  const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)
 
   useEffect(() => {
 
@@ -31,6 +36,13 @@ export default function Home() {
       response.json().then(json => {
         if (json.ipVersion === 6) {
           setIpv6(json.ipAddress)
+
+          //Set Position details, before user grant GPS access
+          if (geolocationSource !== "gps") {
+            setGeolocationLatitude(json.latitude)
+            setGeolocationLongitude(json.longitude)
+            setGeolocationAccuracy(50000)  //from https://iplogger.org/ip-tracker/
+          }
         }
       })
     })
@@ -42,10 +54,12 @@ export default function Home() {
     setPlatformOSVersion(platform.os.version)
     // setPlatformDescription(platform.description)
 
-    //Set Network details - https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
+    //Set Network details
+    //https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
     //OBS: API does not support Firefox or Safari
     if ("connection" in navigator) {
       const connection:any = navigator["connection"]
+      // console.log(connection)
       const type = connection.type
       const quality = connection.effectiveType 
       setNetworkType(type)
@@ -55,12 +69,47 @@ export default function Home() {
     //Set Device details
     //OBS: device detection by UA string, and not all of them have this info
     setDeviceType(screen.width > 768 ? "desktop" : "cellphone")
-    setdeviceScreen(`${screen.width} x ${screen.height}`)
+    setDeviceScreen(`${screen.width} x ${screen.height}`)
     if (platform.manufacturer) {
       setDeviceModel(platform.product)
       setDeviceManufacturer(platform.manufacturer)
     }
-    
+
+    //Set Position details, after user grant GPS access
+    //https://www.w3schools.com/html/html5_geolocation.asp
+    //OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
+    //OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
+    function showPosition(position: any) {
+      setGeolocationSource("gps")
+      // console.log(position)
+      setGeolocationLatitude(position.coords.latitude)
+      setGeolocationLongitude(position.coords.longitude)
+      setGeolocationAccuracy(position.coords.accuracy)
+    }
+
+    function showError(error: any) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          setGeolocationGpsError("User denied the request for Geolocation.")
+          break;
+        case error.POSITION_UNAVAILABLE:
+          setGeolocationGpsError("Location information is unavailable.")
+          break;
+        case error.TIMEOUT:
+          setGeolocationGpsError("The request to get user location timed out.")
+          break;
+        case error.UNKNOWN_ERROR:
+          setGeolocationGpsError("An unknown error occurred.")
+          break;
+      }
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError)
+    }
+    else {
+      setGeolocationGpsError("Geolocation is not supported by this browser.")
+    }
   }, [])
 
   //Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
@@ -87,7 +136,7 @@ export default function Home() {
             os_version: platformOSVersion,
             // description: platformDescription
           },
-          connection: {
+          network: {
             type: networkType,
             quality: networkQuality
           },
@@ -96,6 +145,13 @@ export default function Home() {
             screen: deviceScreen,
             model: deviceModel,
             manufacturer: deviceManufacturer,
+          },
+          geolocation: {
+            source: geolocationSource,
+            error: geolocationError,
+            latitude: geolocationLatitude,
+            longitude: geolocationLongitude,
+            accuracy: geolocationAccuracy
           }
         }} 
       />
