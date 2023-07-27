@@ -134,7 +134,7 @@ export default function Home() {
             os_version: platformOSVersion,
             // description: platformDescription
           },
-          connection: {
+          network: {
             type: networkType,
             quality: networkQuality
           },

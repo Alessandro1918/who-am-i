@@ -17,7 +17,7 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "os_name": "Android",
     "os_version": "13"
   },
-  "connection": {
+  "network": {
     "type": "cellular",
     "quality": "4g"
   },
