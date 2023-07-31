@@ -1,4 +1,7 @@
 # who-am-i
+![](https://sloc.xyz/github/Alessandro1918/who-am-i/)
+![](https://sloc.xyz/github/Alessandro1918/who-am-i?category=code)
+![](https://sloc.xyz/github/Alessandro1918/who-am-i?category=comments)
 
 ## 🚀 Projeto
 
