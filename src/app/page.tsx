@@ -21,11 +21,10 @@ export default function Home() {
   const [ geolocationSource, setGeolocationSource ] = useState("-")
   const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
   const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
-  const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0) //https://iplogger.org/ip-tracker/
-  const [ geolocationCity, setGeolocationGpsCity ] = useState("-")
-  const [ geolocationCountry, setGeolocationGpsCountry ] = useState("-")
-  const [ geolocationMessage, setGeolocationGpsMessage ] = useState("-")
-
+  const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)       //https://iplogger.org/ip-tracker/
+  const [ geolocationCity, setGeolocationCity ] = useState("-")
+  const [ geolocationCountry, setGeolocationCountry ] = useState("-")
+  const [ geolocationMessage, setGeolocationMessage ] = useState("-")
 
   useEffect(() => {
 
@@ -44,8 +43,8 @@ export default function Home() {
           setGeolocationSource("ip")
           setGeolocationLatitude(Number(json.loc.split(",")[0]))
           setGeolocationLongitude(Number(json.loc.split(",")[1]))
-          setGeolocationGpsCity(json.city)
-          setGeolocationGpsCountry(json.country)
+          setGeolocationCity(json.city)
+          setGeolocationCountry(json.country)
         }
       } catch (err) {
         console.log(err)
@@ -99,7 +98,7 @@ export default function Home() {
     //https://www.w3schools.com/html/html5_geolocation.asp
     //OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
     //OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
-    function showGeolocationPosition(position: any) {
+    function getGeolocationPosition(position: any) {
       setGeolocationSource("gps")
       // console.log(position)
       setGeolocationLatitude(position.coords.latitude)
@@ -107,28 +106,28 @@ export default function Home() {
       setGeolocationAccuracy(position.coords.accuracy)
     }
 
-    function showGeolocationError(error: any) {
+    function getGeolocationError(error: any) {
       switch(error.code) {
         case error.PERMISSION_DENIED:
-          setGeolocationGpsMessage("User denied the request for Geolocation.")
+          setGeolocationMessage("User denied the request for Geolocation.")
           break;
         case error.POSITION_UNAVAILABLE:
-          setGeolocationGpsMessage("Location information is unavailable.")
+          setGeolocationMessage("Location information is unavailable.")
           break;
         case error.TIMEOUT:
-          setGeolocationGpsMessage("The request to get user location timed out.")
+          setGeolocationMessage("The request to get user location timed out.")
           break;
         case error.UNKNOWN_ERROR:
-          setGeolocationGpsMessage("An unknown error occurred.")
+          setGeolocationMessage("An unknown error occurred.")
           break;
       }
     }
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showGeolocationPosition, showGeolocationError)
+      navigator.geolocation.getCurrentPosition(getGeolocationPosition, getGeolocationError)
     }
     else {
-      setGeolocationGpsMessage("Geolocation is not supported by this browser.")
+      setGeolocationMessage("Geolocation is not supported by this browser.")
     }
   }, [])
 
