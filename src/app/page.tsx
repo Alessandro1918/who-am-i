@@ -24,7 +24,6 @@ export default function Home() {
   const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)       //https://iplogger.org/ip-tracker/
   const [ geolocationCity, setGeolocationCity ] = useState("-")
   const [ geolocationCountry, setGeolocationCountry ] = useState("-")
-  const [ geolocationMessage, setGeolocationMessage ] = useState("-")
 
   useEffect(() => {
 
@@ -34,7 +33,7 @@ export default function Home() {
       try {
         // const response = await fetch("https://api.ipify.org?format=json")
         const response = await fetch("https://ipinfo.io/json")
-        if (response.status !== 200) { throw new Error("IPV4 API error") }
+        if (response.status !== 200) { throw new Error("IP error: IPV4 API error") }
         const json = await response.json()
         setIpv4(json.ip)
 
@@ -47,22 +46,24 @@ export default function Home() {
           setGeolocationCountry(json.country)
         }
       } catch (err) {
-        console.log(err)
         setIpv4("X")
+        console.log(err)
       }
 
       //IP V6:
       try {
         // const response = await fetch("https://freeipapi.com/api/json")
         const response = await fetch("https://api.iplocation.net/?cmd=get-ip")
-        if (response.status !== 200) { throw new Error("IPV6 API error") }
+        if (response.status !== 200) { throw new Error("IP error: IPV6 API error") }
         const json = await response.json()
         if (json.ip_version == 6) {
           setIpv6(json.ip)
+        } else {
+          setIpv6("X")
         }
       } catch (err) {
-        console.log(err)
         setIpv6("X")
+        console.log(err)
       }
     })()
 
@@ -83,6 +84,10 @@ export default function Home() {
       const quality = connection.effectiveType 
       setNetworkType(type)
       setNetworkQuality(quality)
+    } else {
+      setNetworkType("X")
+      setNetworkQuality("X")
+      console.log("Network error: NetworkInformation API not supported by this browser")
     }
 
     //Get Device details:
@@ -109,16 +114,16 @@ export default function Home() {
     function getGeolocationError(error: any) {
       switch(error.code) {
         case error.PERMISSION_DENIED:
-          setGeolocationMessage("User denied the request for Geolocation.")
+          console.log("Geolocation error: User denied the request for Geolocation.")
           break;
         case error.POSITION_UNAVAILABLE:
-          setGeolocationMessage("Location information is unavailable.")
+          console.log("Geolocation error: Location information is unavailable.")
           break;
         case error.TIMEOUT:
-          setGeolocationMessage("The request to get user location timed out.")
+          console.log("Geolocation error: The request to get user location timed out.")
           break;
         case error.UNKNOWN_ERROR:
-          setGeolocationMessage("An unknown error occurred.")
+          console.log("Geolocation error: An unknown error occurred.")
           break;
       }
     }
@@ -127,7 +132,7 @@ export default function Home() {
       navigator.geolocation.getCurrentPosition(getGeolocationPosition, getGeolocationError)
     }
     else {
-      setGeolocationMessage("Geolocation is not supported by this browser.")
+      console.log("Geolocation error: Geolocation is not supported by this browser.")
     }
   }, [])
 
@@ -172,7 +177,6 @@ export default function Home() {
             accuracy: geolocationAccuracy,
             city: geolocationCity,
             country: geolocationCountry,
-            message: geolocationMessage,
           }
         }} 
       />
