@@ -5,19 +5,19 @@ const platform = require("platform")
 
 export default function Home() {
 
-  const [ ipv4, setIpv4 ] = useState("-")
-  const [ ipv6, setIpv6 ] = useState("-")
+  const [ ipv4, setIpv4 ] = useState<String | undefined>("-")
+  const [ ipv6, setIpv6 ] = useState<String | undefined>("-")
   const [ platformBrowserName, setPlatformBrowserName ] = useState("-")
   const [ platformBrowserVersion, setPlatformBrowserVersion ] = useState("-")
   const [ platformOSName, setPlatformOSName ] = useState("-")
   const [ platformOSVersion, setPlatformOSVersion ] = useState("-")
   // const [ platformDescription, setPlatformDescription ] = useState("-")
-  const [ networkType, setNetworkType ] = useState("-")
-  const [ networkQuality, setNetworkQuality ] = useState("-")
+  const [ networkType, setNetworkType ] = useState<String | undefined>("-")
+  const [ networkQuality, setNetworkQuality ] = useState<String | undefined>("-")
   const [ deviceType, setDeviceType ] = useState("-")
   const [ deviceScreen, setDeviceScreen ] = useState("-")
-  const [ deviceModel, setDeviceModel ] = useState("-")
-  const [ deviceManufacturer, setDeviceManufacturer ] = useState("-")
+  const [ deviceModel, setDeviceModel ] = useState<String | undefined>("-")
+  const [ deviceManufacturer, setDeviceManufacturer ] = useState<String | undefined>("-")
   const [ geolocationSource, setGeolocationSource ] = useState("-")
   const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
   const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
@@ -37,7 +37,7 @@ export default function Home() {
         const json = await response.json()
         setIpv4(json.ip)
 
-        //Get Position details, before user grant GPS access:
+        //Get rough Position details, before ask user to grant GPS access:
         if (geolocationSource !== "gps") {
           setGeolocationSource("ip")
           setGeolocationLatitude(Number(json.loc.split(",")[0]))
@@ -46,7 +46,7 @@ export default function Home() {
           setGeolocationCountry(json.country)
         }
       } catch (err) {
-        setIpv4("X")
+        setIpv4(undefined)
         console.log(err)
       }
 
@@ -59,10 +59,10 @@ export default function Home() {
         if (json.ip_version == 6) {
           setIpv6(json.ip)
         } else {
-          setIpv6("X")
+          setIpv6(undefined)
         }
       } catch (err) {
-        setIpv6("X")
+        setIpv6(undefined)
         console.log(err)
       }
     })()
@@ -85,18 +85,22 @@ export default function Home() {
       setNetworkType(type)
       setNetworkQuality(quality)
     } else {
-      setNetworkType("X")
-      setNetworkQuality("X")
+      setNetworkType(undefined)
+      setNetworkQuality(undefined)
       console.log("Network error: NetworkInformation API not supported by this browser")
     }
 
     //Get Device details:
-    //OBS: device detection by UA string, and not all of them have this info
-    setDeviceType(screen.width > 768 ? "desktop" : "cellphone")
+    // setDeviceType((window.matchMedia("(pointer: coarse)").matches) || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) ? "mobile" : "desktop")  // check type by checking for touchscreen
+    setDeviceType(screen.width > 768 ? "desktop" : "mobile")   // check type by checking by screen size
     setDeviceScreen(`${screen.width} x ${screen.height}`)
+    //OBS: device detection by UA string, and not all of them have this info
     if (platform.manufacturer) {
       setDeviceModel(platform.product)
       setDeviceManufacturer(platform.manufacturer)
+    } else {
+      setDeviceModel(undefined)
+      setDeviceManufacturer(undefined)
     }
 
     //Get Position details, after user grant GPS access:
@@ -178,7 +182,7 @@ export default function Home() {
             city: geolocationCity,
             country: geolocationCountry,
           }
-        }} 
+        }}
       />
     </main>
   )

@@ -6,6 +6,7 @@
 ## 🚀 Projeto
 
 Obtenha informações sobre usuários do seu site e trace um perfil do seu público-alvo.</br></br>
+<!-- Old URL from a previous deploy. Instead of edit the README, I redirected the domain in the Vercel settings -->
 Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro1918.vercel.app)
 
 ```json
@@ -25,17 +26,18 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "quality": "4g"
   },
   "device": {
-    "type": "cellphone",
+    "type": "mobile",
     "screen": "412 x 915",
     "model": "Samsung SM-N770F",
     "manufacturer": "Samsung"
   },
   "geolocation": {
     "source": "gps",
-    "error": "-",
     "latitude": -23.1234567890,
     "longitude": -46.1234567890,
     "accuracy": 40,
+    "city":"São Paulo",
+    "country":"BR"
   }
 }
 ```
