@@ -7,17 +7,16 @@ export default function Home() {
 
   const [ ipv4, setIpv4 ] = useState<String | undefined>("-")
   const [ ipv6, setIpv6 ] = useState<String | undefined>("-")
-  const [ platformBrowserName, setPlatformBrowserName ] = useState("-")
-  const [ platformBrowserVersion, setPlatformBrowserVersion ] = useState("-")
-  const [ platformOSName, setPlatformOSName ] = useState("-")
-  const [ platformOSVersion, setPlatformOSVersion ] = useState("-")
-  // const [ platformDescription, setPlatformDescription ] = useState("-")
+  const [ browserName, setBrowserName ] = useState("-")
+  const [ browserVersion, setBrowserVersion ] = useState("-")
   const [ networkType, setNetworkType ] = useState<String | undefined>("-")
   const [ networkQuality, setNetworkQuality ] = useState<String | undefined>("-")
   const [ deviceType, setDeviceType ] = useState("-")
   const [ deviceScreen, setDeviceScreen ] = useState("-")
   const [ deviceModel, setDeviceModel ] = useState<String | undefined>("-")
   const [ deviceManufacturer, setDeviceManufacturer ] = useState<String | undefined>("-")
+  const [ osName, setOSName ] = useState("-")
+  const [ osVersion, setOSVersion ] = useState("-")
   const [ geolocationSource, setGeolocationSource ] = useState("-")
   const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
   const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
@@ -37,7 +36,7 @@ export default function Home() {
         const json = await response.json()
         setIpv4(json.ip)
 
-        //Get rough Position details, before ask user to grant GPS access:
+        //Get rough Geolocation details, before ask user to grant GPS access:
         if (geolocationSource !== "gps") {
           setGeolocationSource("ip")
           setGeolocationLatitude(Number(json.loc.split(",")[0]))
@@ -67,12 +66,9 @@ export default function Home() {
       }
     })()
 
-    //Get Platform details:
-    setPlatformBrowserName(platform.name)
-    setPlatformBrowserVersion(platform.version)
-    setPlatformOSName(platform.os.family)
-    setPlatformOSVersion(platform.os.version)
-    // setPlatformDescription(platform.description)
+    //Get Browser details:
+    setBrowserName(platform.name)
+    setBrowserVersion(platform.version)
 
     //Get Network details:
     //https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
@@ -102,8 +98,10 @@ export default function Home() {
       setDeviceModel(undefined)
       setDeviceManufacturer(undefined)
     }
+    setOSName(platform.os.family)
+    setOSVersion(platform.os.version)
 
-    //Get Position details, after user grant GPS access:
+    //Get Geolocation details, after user grant GPS access:
     //https://www.w3schools.com/html/html5_geolocation.asp
     //OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
     //OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
@@ -157,12 +155,9 @@ export default function Home() {
           ip: {
             ipv4, ipv6
           }, 
-          platform: {
-            browser_name: platformBrowserName,
-            browser_version: platformBrowserVersion,
-            os_name: platformOSName,
-            os_version: platformOSVersion,
-            // description: platformDescription
+          browser: {
+            name: browserName,
+            version: browserVersion
           },
           network: {
             type: networkType,
@@ -173,6 +168,8 @@ export default function Home() {
             screen: deviceScreen,
             model: deviceModel,
             manufacturer: deviceManufacturer,
+            os_name: osName,
+            os_version: osVersion,
           },
           geolocation: {
             source: geolocationSource,

@@ -15,11 +15,10 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "ipv4": "189.98.247.128",
     "ipv6": "2804:17:1053:4d23:1:2:12d:ea54"
   },
-  "platform": {
-    "browser_name": "Samsung Internet",
-    "browser_version": "22.0",
-    "os_name": "Android",
-    "os_version": "13"
+  "browser": {
+    "name": "Samsung Internet",
+    "version": "22.0",
+
   },
   "network": {
     "type": "cellular",
@@ -29,7 +28,9 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "type": "mobile",
     "screen": "412 x 915",
     "model": "Samsung SM-N770F",
-    "manufacturer": "Samsung"
+    "manufacturer": "Samsung",
+    "os_name": "Android",
+    "os_version": "13"
   },
   "geolocation": {
     "source": "gps",
