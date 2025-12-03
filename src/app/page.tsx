@@ -1,22 +1,22 @@
 "use client"
 import { useState, useEffect } from "react"
 import JsonViewer from "./components/JsonViewer"
-const platform = require("platform")
+import platform from "platform"
 
 export default function Home() {
 
   const [ ipv4, setIpv4 ] = useState<String | undefined>("-")
   const [ ipv6, setIpv6 ] = useState<String | undefined>("-")
-  const [ browserName, setBrowserName ] = useState("-")
-  const [ browserVersion, setBrowserVersion ] = useState("-")
+  const [ browserName, setBrowserName ] = useState<String | undefined>("-")
+  const [ browserVersion, setBrowserVersion ] = useState<String | undefined>("-")
   const [ networkType, setNetworkType ] = useState<String | undefined>("-")
   const [ networkQuality, setNetworkQuality ] = useState<String | undefined>("-")
   const [ deviceType, setDeviceType ] = useState("-")
   const [ deviceScreen, setDeviceScreen ] = useState("-")
   const [ deviceModel, setDeviceModel ] = useState<String | undefined>("-")
   const [ deviceManufacturer, setDeviceManufacturer ] = useState<String | undefined>("-")
-  const [ osName, setOSName ] = useState("-")
-  const [ osVersion, setOSVersion ] = useState("-")
+  const [ osName, setOSName ] = useState<String | undefined>("-")
+  const [ osVersion, setOSVersion ] = useState<String | undefined>("-")
   const [ geolocationSource, setGeolocationSource ] = useState("-")
   const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
   const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
@@ -88,18 +88,14 @@ export default function Home() {
 
     //Get Device details:
     // setDeviceType((window.matchMedia("(pointer: coarse)").matches) || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) ? "mobile" : "desktop")  // check type by checking for touchscreen
-    setDeviceType(screen.width > 768 ? "desktop" : "mobile")   // check type by checking by screen size
+    setDeviceType(screen.width > 768 ? "desktop" : "mobile")   // check type by checking for screen size
     setDeviceScreen(`${screen.width} x ${screen.height}`)
     //OBS: device detection by UA string, and not all of them have this info
-    if (platform.manufacturer) {
-      setDeviceModel(platform.product)
-      setDeviceManufacturer(platform.manufacturer)
-    } else {
-      setDeviceModel(undefined)
-      setDeviceManufacturer(undefined)
-    }
-    setOSName(platform.os.family)
-    setOSVersion(platform.os.version)
+    // console.log(platform)
+    setDeviceModel(platform.product ? platform.product : undefined)
+    setDeviceManufacturer(platform.manufacturer ? platform.manufacturer : undefined)
+    setOSName(platform.os ? platform.os.family : undefined)
+    setOSVersion(platform.os ? platform.os.version : undefined)
 
     //Get Geolocation details, after user grant GPS access:
     //https://www.w3schools.com/html/html5_geolocation.asp
