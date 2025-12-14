@@ -17,18 +17,20 @@ export default function Home() {
   const [ deviceManufacturer, setDeviceManufacturer ] = useState<String | undefined>("-")
   const [ osName, setOSName ] = useState<String | undefined>("-")
   const [ osVersion, setOSVersion ] = useState<String | undefined>("-")
+  const [ batteryLevel, setBatteryLevel ] = useState<String | undefined>("-")
+  const [ isBatteryCharging, setIsBatteryCharging ] = useState<boolean | undefined>(false)
   const [ geolocationSource, setGeolocationSource ] = useState("-")
   const [ geolocationLatitude, setGeolocationLatitude ] = useState(0)
   const [ geolocationLongitude, setGeolocationLongitude ] = useState(0)
-  const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)       //https://iplogger.org/ip-tracker/
+  const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)   // https://iplogger.org/ip-tracker/
   const [ geolocationCity, setGeolocationCity ] = useState("-")
   const [ geolocationCountry, setGeolocationCountry ] = useState("-")
 
   useEffect(() => {
 
-    //Get IP:
+    // Get IP:
     (async () => {
-      //IP V4:
+      // IP V4:
       try {
         // const response = await fetch("https://api.ipify.org?format=json")
         const response = await fetch("https://ipinfo.io/json")
@@ -36,7 +38,7 @@ export default function Home() {
         const json = await response.json()
         setIpv4(json.ip)
 
-        //Get rough Geolocation details, before ask user to grant GPS access:
+        // Get rough Geolocation details, before ask user to grant GPS access:
         if (geolocationSource !== "gps") {
           setGeolocationSource("ip")
           setGeolocationLatitude(Number(json.loc.split(",")[0]))
@@ -49,7 +51,7 @@ export default function Home() {
         console.log(err)
       }
 
-      //IP V6:
+      // IP V6:
       try {
         // const response = await fetch("https://freeipapi.com/api/json")
         const response = await fetch("https://api.iplocation.net/?cmd=get-ip")
@@ -66,41 +68,49 @@ export default function Home() {
       }
     })()
 
-    //Get Browser details:
+    // Get Browser details:
     setBrowserName(platform.name)
     setBrowserVersion(platform.version)
 
-    //Get Network details:
-    //https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
-    //OBS: API does not support Firefox or Safari
+    // Get Network details:
+    // https://developer.mozilla.org/en-US/docs/Web/API/NetworkInformation
+    // const connection = navigator.connection // Property 'connection' does not exist on type 'Navigator'.ts(2339)
     if ("connection" in navigator) {
-      const connection:any = navigator["connection"]
+      const connection:any = navigator.connection
       // console.log(connection)
-      const type = connection.type
-      const quality = connection.effectiveType 
-      setNetworkType(type)
-      setNetworkQuality(quality)
+      setNetworkType(connection.type)
+      setNetworkQuality(connection.effectiveType)
     } else {
       setNetworkType(undefined)
       setNetworkQuality(undefined)
-      console.log("Network error: NetworkInformation API not supported by this browser")
+      console.log("Network error: NetworkInformation API not supported by this browser")  // Firefox or Safari
     }
 
-    //Get Device details:
+    // Get Device details:
     // setDeviceType((window.matchMedia("(pointer: coarse)").matches) || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) ? "mobile" : "desktop")  // check type by checking for touchscreen
     setDeviceType(screen.width > 768 ? "desktop" : "mobile")   // check type by checking for screen size
     setDeviceScreen(`${screen.width} x ${screen.height}`)
-    //OBS: device detection by UA string, and not all of them have this info
+    // OBS: device detection by UA string, and not all of them have this info:
     // console.log(platform)
     setDeviceModel(platform.product ? platform.product : undefined)
     setDeviceManufacturer(platform.manufacturer ? platform.manufacturer : undefined)
     setOSName(platform.os ? platform.os.family : undefined)
     setOSVersion(platform.os ? platform.os.version : undefined)
+    if ("getBattery" in navigator) {
+      (navigator as any).getBattery().then((battery: any) => {
+        setBatteryLevel(`${100 * battery.level}%`)
+        setIsBatteryCharging(battery.charging)
+      })
+    } else {
+      setBatteryLevel(undefined)
+      setIsBatteryCharging(undefined)
+      console.log("Battery error: BatteryManager API not supported by this browser")  // Firefox or Safari
+    }
 
-    //Get Geolocation details, after user grant GPS access:
-    //https://www.w3schools.com/html/html5_geolocation.asp
-    //OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
-    //OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
+    // Get Geolocation details, after user grant GPS access:
+    // https://www.w3schools.com/html/html5_geolocation.asp
+    // OBS: Mobile browsers, once location permission is denied, won't ever ask user for permission again. Enable location usage manually by clicking on the locker icon beside the URL.
+    // OBS: Mobile browsers won't distinguish between GPS "on" or "off", even after location permission is granted.
     function getGeolocationPosition(position: any) {
       setGeolocationSource("gps")
       // console.log(position)
@@ -126,16 +136,12 @@ export default function Home() {
       }
     }
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(getGeolocationPosition, getGeolocationError)
-    }
-    else {
-      console.log("Geolocation error: Geolocation is not supported by this browser.")
-    }
+    // navigator.geolocation supported by all browsers, so I don't have to check key existence like some properties / methods above;
+    navigator.geolocation.getCurrentPosition(getGeolocationPosition, getGeolocationError)
   }, [])
 
-  //Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
-  //and logs client-side platform data on browser's console when useEffect runs client-side
+  // Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
+  // and logs client-side platform data on browser's console when useEffect runs client-side
   // console.log(platform.toString())    
 
   return (
@@ -166,6 +172,8 @@ export default function Home() {
             manufacturer: deviceManufacturer,
             os_name: osName,
             os_version: osVersion,
+            batteryLevel: batteryLevel,
+            isBatteryCharging: isBatteryCharging
           },
           geolocation: {
             source: geolocationSource,
