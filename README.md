@@ -30,7 +30,9 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "model": "Samsung SM-N770F",
     "manufacturer": "Samsung",
     "os_name": "Android",
-    "os_version": "13"
+    "os_version": "13",
+    "batteryLevel": "42%",
+    "isBatteryCharging": false
   },
   "geolocation": {
     "source": "gps",
