@@ -99,7 +99,7 @@ export default function Home() {
     setOSVersion(platform.os ? platform.os.version : undefined)
     if ("getBattery" in navigator) {
       (navigator as any).getBattery().then((battery: any) => {
-        setBatteryLevel(`${100 * battery.level}%`)
+        setBatteryLevel(`${Math.ceil(100 * battery.level)}%`)
         setIsBatteryCharging(battery.charging)
       })
     } else {
