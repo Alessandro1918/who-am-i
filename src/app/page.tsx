@@ -25,6 +25,7 @@ export default function Home() {
   const [ geolocationAccuracy, setGeolocationAccuracy ] = useState(0)   // https://iplogger.org/ip-tracker/
   const [ geolocationCity, setGeolocationCity ] = useState("-")
   const [ geolocationCountry, setGeolocationCountry ] = useState("-")
+  const [ language, setLanguage ] = useState("-")
 
   useEffect(() => {
 
@@ -138,6 +139,8 @@ export default function Home() {
 
     // navigator.geolocation supported by all browsers, so I don't have to check key existence like some properties / methods above;
     navigator.geolocation.getCurrentPosition(getGeolocationPosition, getGeolocationError)
+
+    setLanguage(navigator.language)
   }, [])
 
   // Logs server-side platform data on VSCode terminal when parent component renders the page server-side,
@@ -182,6 +185,7 @@ export default function Home() {
             accuracy: geolocationAccuracy,
             city: geolocationCity,
             country: geolocationCountry,
+            language: language
           }
         }}
       />
