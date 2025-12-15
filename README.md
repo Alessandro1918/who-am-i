@@ -40,7 +40,8 @@ Demo: [https://who-am-i-alessandro1918.vercel.app](https://who-am-i-alessandro19
     "longitude": -46.1234567890,
     "accuracy": 40,
     "city":"São Paulo",
-    "country":"BR"
+    "country":"BR",
+    "language": "pt-BR"
   }
 }
 ```
